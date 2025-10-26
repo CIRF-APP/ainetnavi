@@ -255,9 +255,7 @@ const ModelProvider = () => {
                   <option value="gemini-1.5-flash-latest">
                     gemini-1.5-flash-latest
                   </option>
-                  <option value="gemini-2.0-flash">
-                    gemini-2.0-flash
-                  </option>
+                  <option value="gemini-2.0-flash">gemini-2.0-flash</option>
                   <option value="gemini2.5-flash-lite">
                     gemini-2.5-flash-lite
                   </option>
