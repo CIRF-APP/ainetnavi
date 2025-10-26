@@ -223,7 +223,7 @@ async function createSlideLine(
           },
         ],
         output: 'no-schema',
-        mode: 'json',
+        //mode: 'json',
       })
     }
   } catch (error) {
