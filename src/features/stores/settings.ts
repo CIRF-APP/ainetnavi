@@ -115,7 +115,7 @@ const settingsStore = create<SettingsState>()(
       selectAIService:
         (process.env.NEXT_PUBLIC_SELECT_AI_SERVICE as AIService) || 'google',
       selectAIModel:
-        process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gemini-flash-lite-latest',
+        process.env.NEXT_PUBLIC_SELECT_AI_MODEL || 'gemini-flash-latest',
       localLlmUrl: process.env.NEXT_PUBLIC_LOCAL_LLM_URL || '',
       selectVoice:
         (process.env.NEXT_PUBLIC_SELECT_VOICE as AIVoice) || 'voicevox',
