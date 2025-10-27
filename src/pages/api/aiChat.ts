@@ -175,10 +175,16 @@ async function handleGeminiAPI(
   messages: Message[],
   stream: boolean
 ): Promise<Response> {
-  const geminiMessages = convertToGeminiFormat(messages)
+  const { systemInstruction, contents } = convertToGeminiFormat(messages)
+
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:${
     stream ? 'streamGenerateContent?alt=sse' : 'generateContent'
   }`
+
+  const requestBody: any = { contents }
+  if (systemInstruction) {
+    requestBody.system_instruction = systemInstruction
+  }
 
   const response = await fetch(url, {
     method: 'POST',
@@ -186,9 +192,7 @@ async function handleGeminiAPI(
       'x-goog-api-key': apiKey,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      contents: geminiMessages,
-    }),
+    body: JSON.stringify(requestBody),
   })
 
   if (!response.ok) {
@@ -289,13 +293,24 @@ async function handleGeminiStreamResponse(
 }
 
 // メッセージをGemini API形式に変換
-function convertToGeminiFormat(messages: Message[]): any[] {
-  return messages
+function convertToGeminiFormat(messages: Message[]): {
+  systemInstruction: any | null
+  contents: any[]
+} {
+  const systemPrompt = messages.find((msg) => msg.role === 'system')?.content
+
+  const contents = messages
     .filter((message) => message.role !== 'system')
     .map((message) => ({
       role: message.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: message.content }],
     }))
+
+  const systemInstruction = systemPrompt
+    ? { parts: [{ text: systemPrompt }] }
+    : null
+
+  return { systemInstruction, contents }
 }
 
 function modifyMessages(aiService: string, messages: Message[]): Message[] {
