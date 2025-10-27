@@ -238,17 +238,22 @@ async function handleGeminiStreamResponse(
         return
       }
 
+      let buffer = ''
+
       try {
         while (true) {
           const { done, value } = await reader.read()
           if (done) break
 
-          const chunk = decoder.decode(value)
-          const lines = chunk.split('\n')
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          buffer = lines.pop() || ''
 
           for (const line of lines) {
             if (line.startsWith('data: ')) {
               try {
+                if (line.slice(6).trim() === '') continue
+
                 const jsonData = JSON.parse(line.slice(6))
                 const text =
                   jsonData.candidates?.[0]?.content?.parts?.[0]?.text || ''
@@ -260,14 +265,16 @@ async function handleGeminiStreamResponse(
                   )
                 }
               } catch (e) {
-                console.error('Parse error:', e)
+                console.error('Parse error:', e, 'on line:', line)
               }
             }
           }
         }
       } catch (error) {
         console.error('Stream error:', error)
+        controller.error(error)
       } finally {
+        reader.releaseLock()
         controller.close()
       }
     },
