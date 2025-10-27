@@ -21,7 +21,7 @@ type AIServiceKey =
 type AIServiceConfig = Record<AIServiceKey, () => any>
 
 // Allow streaming responses up to 30 seconds
-export const maxDuration = 300
+export const maxDuration = 30
 
 export const config = {
   runtime: 'edge',
