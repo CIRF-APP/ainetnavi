@@ -187,7 +187,7 @@ export const processAIResponse = async (
         if (sentenceMatch?.[0]) {
           let sentence = sentenceMatch[0]
           // 区切った文字をsentencesに追加
-          sentences.push(sentence)
+          // sentences.push(sentence) // 後でタグ除去済みのものをpushする
           // 区切った文字の残りでreceivedMessageを更新
           receivedMessage = receivedMessage.slice(sentence.length).trimStart()
 
@@ -236,7 +236,9 @@ export const processAIResponse = async (
           }
 
           const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
-          aiTextLog.push({ role: 'assistant', content: sentence })
+          const cleanedSentence = aiTalks[0].talk.message
+          sentences.push(cleanedSentence) // タグ除去済みのテキストをsentencesに追加
+          aiTextLog.push({ role: 'assistant', content: cleanedSentence })
 
           // 文ごとに音声を生成 & 再生、返答を表示
           const currentAssistantMessage = sentences.join(' ')
@@ -273,8 +275,9 @@ export const processAIResponse = async (
         // 残りのメッセージを処理
         let aiText = `${tag} ${receivedMessage}`
         const aiTalks = textsToScreenplay([aiText], ss.koeiroParam)
-        aiTextLog.push({ role: 'assistant', content: receivedMessage })
-        sentences.push(receivedMessage)
+        const cleanedMessage = aiTalks[0].talk.message
+        aiTextLog.push({ role: 'assistant', content: cleanedMessage })
+        sentences.push(cleanedMessage)
 
         const currentAssistantMessage = sentences.join(' ')
 
