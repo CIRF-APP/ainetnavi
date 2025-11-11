@@ -38,11 +38,8 @@ export const MessageInput = ({
           return prev + '.'
         })
       }, 200)
-
       return () => clearInterval(interval)
-
-      }
-    
+    }
   }, [chatProcessing])
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
