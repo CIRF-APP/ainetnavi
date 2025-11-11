@@ -40,12 +40,9 @@ export const MessageInput = ({
       }, 200)
 
       return () => clearInterval(interval)
-    } else {
-      if (textareaRef.current) {
-        textareaRef.current.value = ''
-        textareaRef.current.focus()
+
       }
-    }
+    
   }, [chatProcessing])
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
